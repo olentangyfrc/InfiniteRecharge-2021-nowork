@@ -13,24 +13,16 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystem.DisplayManager;
 import frc.robot.subsystem.PortMan;
 import frc.robot.subsystem.SubsystemFactory;
-import frc.robot.subsystem.commandgroups.ScoringAuton;
-import frc.robot.subsystem.commandgroups.SimpleAuton;
 import frc.robot.subsystem.controlpanel.ControlPanel;
 import frc.robot.util.OzoneLogger;
 
 import frc.robot.subsystem.SBInterface;
 import frc.robot.subsystem.controlpanel.ControlPanelSBTab;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -46,11 +38,8 @@ public class Robot extends TimedRobot {
   private static SubsystemFactory subsystemFactory;
 
   private DisplayManager dManager;
-  private NetworkTableEntry simpleAuton;
-  private ShuffleboardTab tab;
 
-  private Auton test;
-  private SequentialCommandGroup autonCommand;
+  private TestAuton test;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -58,11 +47,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    subsystemFactory = SubsystemFactory.getInstance();
-
-    tab = Shuffleboard.getTab("Auton");
-    simpleAuton = tab.add("Simple Auton", true).getEntry();
-
+    subsystemFactory = SubsystemFactory.getInstance(isReal());
     OzoneLogger.getInstance().init(Level.FINE);
     dManager = new DisplayManager();
 
@@ -89,7 +74,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
        CommandScheduler.getInstance().run();
-       //dManager.update();
+       dManager.update();
   }
 
   /**
@@ -106,21 +91,10 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     CommandScheduler.getInstance().run();
-    test = new Auton(0.3);
+    
+    test = new TestAuton();
     test.initialize();
-
-
-    if(simpleAuton.getBoolean(true))
-      autonCommand = new SimpleAuton();
-    else{
-      autonCommand = new ScoringAuton(
-        SubsystemFactory.getInstance().getTransport(), 
-        SubsystemFactory.getInstance().getIntake(),
-        SubsystemFactory.getInstance().getControlPanel(), 
-        SubsystemFactory.getInstance().getShooter());
-    }
-
-    CommandScheduler.getInstance().schedule(autonCommand);
+    test.execute();
   }
 
   /**
@@ -129,8 +103,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     CommandScheduler.getInstance().run();
-
-    //test.execute();
   }
 
   /**

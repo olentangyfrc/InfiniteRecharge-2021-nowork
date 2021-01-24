@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystem.telemetry.commands;
+/*package frc.robot.subsystem.telemetry.commands;
 
 import java.util.logging.Logger;
 
@@ -16,6 +16,8 @@ public class SquareSelf extends CommandBase {
   /**
    * Creates a new SquareSelf.
    */
+
+  /*
   private Telemetry telemetry;
   private boolean stop;
   private double targetDistance;
@@ -130,3 +132,4 @@ public class SquareSelf extends CommandBase {
     return stop;
   }
 }
+*/
